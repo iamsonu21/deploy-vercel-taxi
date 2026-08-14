@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { routesData, RouteInfo } from '@/data/routesData';
+import { destinationPlaces } from '@/data/placesData';
 import { 
   Phone, 
   MessageCircle, 
@@ -42,6 +43,7 @@ export default function DynamicRoutePage({ params }: PageProps) {
     .replace(/[^a-z0-9]+/g, '-');
     
   const finalImagePath = route.image || `/routes/${autoImageName}.jpg`;
+  const autoPlaces = destinationPlaces[route.to] || [];
   // ------------------------------
 
   const phoneNumber = '+919876543210';
@@ -391,31 +393,50 @@ export default function DynamicRoutePage({ params }: PageProps) {
         </section>
 
         {/* ====================================================
-            4. Nearby Places to Visit in (CITY)
-           ==================================================== */}
-        <section className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-wider mb-2">
-            <Compass className="w-4 h-4" />
-            <span>Local Sightseeing</span>
-          </div>
-          <h2 className="text-2xl font-extrabold text-slate-950 mb-2">
-            Top Places to Visit in {route.to}
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mb-6">
-            Explore these popular attractions around {route.to}. We offer custom full-day taxi packages for local sightseeing.
-          </p>
+    LOCAL SIGHTSEEING / TOP PLACES SECTION
+========================================= */}
+<div className="bg-white border border-slate-200 p-6 sm:p-10 rounded-3xl shadow-xl shadow-slate-200/50 mb-12">
+  
+  <div className="flex items-center gap-2 text-amber-600 mb-2">
+    <MapPin className="w-4 h-4 font-bold" />
+    <span className="text-xs font-bold uppercase tracking-wider">Local Sightseeing</span>
+  </div>
+  
+  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">
+    Top Places to Visit in {route.to}
+  </h2>
+  
+  <p className="text-slate-600 font-medium mb-8">
+    Explore these popular attractions around {route.to}. We offer custom full-day taxi packages for local sightseeing.
+  </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {nearbyPlaces.map((place, idx) => (
-              <div key={idx} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-amber-100 text-amber-700 shrink-0">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <span className="text-sm font-bold text-slate-800">{place}</span>
-              </div>
-            ))}
+ {/* DYNAMIC PLACES GRID */}
+  {autoPlaces.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {autoPlaces.map((place, index) => (
+        <div 
+          key={index} 
+          className="flex items-center gap-3 bg-slate-50 hover:bg-amber-50 p-4 rounded-2xl border border-slate-100 transition-colors group"
+        >
+          <div className="p-2 bg-white rounded-xl shadow-sm text-amber-500 group-hover:text-amber-600 group-hover:scale-110 transition-all">
+            <MapPin className="w-5 h-5" />
           </div>
-        </section>
+          <span className="font-bold text-slate-800 group-hover:text-amber-700">
+            {place}
+          </span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    // Fallback if the city isn't in your dictionary yet
+    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center">
+      <p className="text-slate-500 font-medium">
+        Popular sightseeing destinations for {route.to} will be updated soon. Contact us for custom tour packages!
+      </p>
+    </div>
+  )}
+
+</div>
 
         {/* ====================================================
             5. FAQ's Section

@@ -11,6 +11,7 @@ export interface RouteInfo {
   highlights: string[];
   tollInfo: string;
   image?: string;
+  topPlaces?: string[];
 }
 
 export const routesData: Record<string, RouteInfo> = {
